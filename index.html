@@ -297,8 +297,8 @@ footer small{color:var(--muted);font-size:.9rem}
         <h2>Acupressure in every step.</h2>
       </div>
       <div class="feel">
-        <figure class="f1"><img src="img/socks-desk.jpg" alt="A walker in white socks stepping onto the Solewalk acupressure track near a standing desk" loading="lazy"><figcaption>Socks on or off</figcaption></figure>
-        <figure class="f2"><img src="img/texture.jpg" alt="Close-up of the rounded acupressure nodes on the Solewalk tread" loading="lazy"><figcaption>Up close</figcaption></figure>
+        <figure class="f1"><img src="img/socks-desk.jpg" alt="A walker in white socks stepping onto the Solewalk acupressure track near a standing desk" loading="lazy"></figure>
+        <figure class="f2"><img src="img/spikes.jpg" alt="Close-up of the cone-shaped acupressure nodes on the sage tread" loading="lazy"></figure>
         <div class="copy">
           <p class="lede">Each tread is silicone molded around a polyester mesh, with the nodes formed in the same pour. Nothing shifts, peels or bunches while the tread turns.</p>
           <ul class="facts">
@@ -720,8 +720,7 @@ function renderCmp(){
       ? `<div class="cmp-pick is-fixed"><div class="fixed">Solewalk</div></div>`
       : `<label class="cmp-pick"><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Compare with</span><select data-col="${i}">${Object.keys(P).filter(x=>x!=='solewalk').map(x=>`<option value="${x}"${x===k?' selected':''}>${P[x].name}</option>`).join('')}</select></label>`;
     const art = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy">` : ART[p.art];
-    const cta = k==='solewalk' ? `<a class="btn btn-primary" href="#reserve">Reserve</a>` : '';
-    h+=`<div class="cmp-cell cmp-head ${c}">${pick}<div class="cmp-art">${art}</div><span class="cmp-type">${p.type}</span><span class="cmp-price price">${p.price}</span><div class="cmp-cta">${cta}</div></div>`;
+    h+=`<div class="cmp-cell cmp-head ${c}">${pick}<div class="cmp-art">${art}</div><span class="cmp-type">${p.type}</span><span class="cmp-price price">${p.price}</span></div>`;
   });
   h+=`<h3 class="cmp-sum">Summary</h3>`;
   h+=`<div class="cmp-row">${picks.map((k,i)=>`<div class="cmp-cell c${i+1}"><span class="cmp-big">${P[k].price}</span><b>${P[k].name}</b><span class="sub">${P[k].type}</span></div>`).join('')}</div>`;
@@ -856,11 +855,20 @@ function init(){
   const rbox=(lx,ly,lz,r,mat,x,y,z)=>add(new RoundedBoxGeometry(lx,ly,lz,6,r),mat,x,y,z);
 
   // body: console block, two side rails, recessed bed between them
-  rbox(23.5,14.5,60,3.4,sage,-58.25,2+7.25,0);
-  rbox(117,10.2,6.6,2.5,sage,11.5,2+5.1,26.7);
-  rbox(117,10.2,6.6,2.5,sage,11.5,2+5.1,-26.7);
+  // one molded shell: a U-shaped base (rails + console foot) and a raised console, sharing flush outer walls
+  const BV=2.2, molded=(shape,y0,y1)=>{const g=new THREE.ExtrudeGeometry(shape,{depth:y1-y0-2*BV,bevelEnabled:true,bevelThickness:BV,bevelSize:BV,bevelSegments:6,curveSegments:14});
+    g.rotateX(-Math.PI/2); g.computeVertexNormals(); return add(g,sage,0,y0+BV,0);};
+  {const b=BV,R0=5,rf=2.2,ri=.6,n=23.6+b,X0=-70+b,X1=70-b,Y=30-b,xi=-46.5+b,u=new THREE.Shape();
+   u.moveTo(X0+R0,Y); u.lineTo(X1-rf,Y); u.quadraticCurveTo(X1,Y,X1,Y-rf); u.lineTo(X1,n+rf); u.quadraticCurveTo(X1,n,X1-rf,n);
+   u.lineTo(xi+ri,n); u.quadraticCurveTo(xi,n,xi,n-ri); u.lineTo(xi,-n+ri); u.quadraticCurveTo(xi,-n,xi+ri,-n);
+   u.lineTo(X1-rf,-n); u.quadraticCurveTo(X1,-n,X1,-n-rf); u.lineTo(X1,-Y+rf); u.quadraticCurveTo(X1,-Y,X1-rf,-Y);
+   u.lineTo(X0+R0,-Y); u.quadraticCurveTo(X0,-Y,X0,-Y+R0); u.lineTo(X0,Y-R0); u.quadraticCurveTo(X0,Y,X0+R0,Y);
+   molded(u,1.2,12.2);
+   const c=new THREE.Shape(),cx=-46.5-b,rc=3;
+   c.moveTo(X0+R0,Y); c.lineTo(cx-rc,Y); c.quadraticCurveTo(cx,Y,cx,Y-rc); c.lineTo(cx,-Y+rc); c.quadraticCurveTo(cx,-Y,cx-rc,-Y);
+   c.lineTo(X0+R0,-Y); c.quadraticCurveTo(X0,-Y,X0,-Y+R0); c.lineTo(X0,Y-R0); c.quadraticCurveTo(X0,Y,X0+R0,Y);
+   molded(c,1.2,16.5);}
   add(new THREE.BoxGeometry(116,6.8,47),bed,11.5,2+3.4,0);
-  rbox(139,2.4,58,1,new THREE.MeshStandardMaterial({color:'#7f9586',roughness:.7}),0,2.2,0);
   // control panel: glossy black glass with five gold rings
   rbox(10.6,.7,40,.3,glass,-61.2,16.42,0);
   const ring=new THREE.TorusGeometry(1.45,.17,10,40), dot=new THREE.SphereGeometry(.32,12,8);
