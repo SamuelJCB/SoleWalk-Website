@@ -97,7 +97,7 @@ section[id]{scroll-margin-top:var(--nav-h)}
   background:var(--bg);color:var(--ink)}
 .roll-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:radial-gradient(ellipse 48% 52% at 66% 52%,#22302A 0%,rgba(12,18,15,0) 72%)}
 @media (max-width:860px){.roll-stage{background:radial-gradient(ellipse 80% 40% at 50% 34%,#22302A 0%,rgba(12,18,15,0) 72%)}}
-#rollCv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#rollCv,#rollGL{position:absolute;inset:0;width:100%;height:100%;display:block}
 .roll-caps{position:relative;height:100%;pointer-events:none}
 .roll-cap{position:absolute;top:50%;max-width:400px;display:grid;gap:14px;opacity:0;transform:translateY(calc(-50% + 36px));transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1)}
 .roll-cap.on{opacity:1;transform:translateY(-50%)}
@@ -627,7 +627,7 @@ dotField(document.getElementById('field2'),document.querySelector('.finale'),nul
   function update(){
     ticking=false;
     const r=sec.getBoundingClientRect(); if(r.bottom<0||r.top>innerHeight) return;
-    const p=progress(), st=draw(p);
+    const p=progress(), st=window.SW3D?window.SW3D.render(p):draw(p);
     caps.forEach(c=>c.classList.toggle('on',p>=+c.dataset.from&&p<+c.dataset.to));
     panel.classList.toggle('on',p>=0.42);
     const act=st.q>0?Math.min(st.si,4):-1;
@@ -639,6 +639,8 @@ dotField(document.getElementById('field2'),document.querySelector('.finale'),nul
     scrollTo({top:y,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }));
   rs(); update();
+  // shared with the 3D view (loaded separately); it falls back to this drawing if 3D is unavailable
+  window.SWroll={stateAt,cam,BX0,BL,BY,BW,RB,COLS,ROWS,QS,QE,update};
   addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
   addEventListener('resize',()=>{rs();update();});
 })();
@@ -793,6 +795,143 @@ document.getElementById('resForm').addEventListener('submit',e=>{
   document.getElementById('resDoneText').textContent=`${name}, your Solewalk reservation request is in. We will write to ${email} when the first units are ready.`;
 });
 })();
+</script>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+/* ---------- realistic 3D pad for the pinned scroll section (three.js) ----------
+   Mirrors the camera and swap timing of the drawing above. Model z is flipped
+   (near side = +z) so the image matches the drawing's orientation. */
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const R=window.SWroll;
+try{ if(R) init(); }catch(e){ console.warn('3D view unavailable, using the drawing instead.',e); }
+
+function init(){
+  const stage=document.querySelector('.roll-stage'), flat=document.getElementById('rollCv');
+  const cv=document.createElement('canvas'); cv.id='rollGL'; cv.setAttribute('aria-hidden','true');
+  const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'});
+  stage.insertBefore(cv,flat); flat.style.display='none';
+  renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.82;
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  const scene=new THREE.Scene();
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture; scene.environmentIntensity=.45;
+  const camera=new THREE.PerspectiveCamera(30,1,5,3000);
+
+  // studio lighting: soft key from above-left, cool rim from behind, gentle fill
+  const key=new THREE.DirectionalLight(0xfff6ec,2.1); key.position.set(-70,170,95);
+  key.castShadow=true; key.shadow.mapSize.set(2048,2048);
+  Object.assign(key.shadow.camera,{left:-110,right:110,top:80,bottom:-80,near:20,far:420});
+  key.shadow.bias=-0.0004; key.shadow.normalBias=0.25; key.shadow.radius=4;
+  const rim=new THREE.DirectionalLight(0xd4ecdf,1.1); rim.position.set(140,70,-150);
+  scene.add(key,rim,new THREE.HemisphereLight(0xe6f2ea,0x0c120f,0.3));
+
+  // floor: catches the pad's shadow, plus a soft contact shadow underneath
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(800,800),new THREE.ShadowMaterial({opacity:.32}));
+  floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+  const bc=document.createElement('canvas'); bc.width=bc.height=128; const bx=bc.getContext('2d');
+  const gr=bx.createRadialGradient(64,64,4,64,64,64); gr.addColorStop(0,'rgba(0,0,0,.85)'); gr.addColorStop(.55,'rgba(0,0,0,.45)'); gr.addColorStop(1,'rgba(0,0,0,0)');
+  bx.fillStyle=gr; bx.fillRect(0,0,128,128);
+  const blob=new THREE.Mesh(new THREE.PlaneGeometry(175,92),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(bc),transparent:true,depthWrite:false,opacity:.9}));
+  blob.rotation.x=-Math.PI/2; blob.position.y=.05; scene.add(blob);
+
+  // materials
+  const sage=new THREE.MeshPhysicalMaterial({color:'#8FAE99',roughness:.5,clearcoat:.35,clearcoatRoughness:.4,envMapIntensity:.6});
+  const bed=new THREE.MeshStandardMaterial({color:'#566C5E',roughness:.85});
+  const glass=new THREE.MeshPhysicalMaterial({color:'#0a0e0d',roughness:.1,clearcoat:1,clearcoatRoughness:.05,envMapIntensity:1.2});
+  const gold=new THREE.MeshStandardMaterial({color:'#D9A766',metalness:.85,roughness:.3,emissive:'#4a2f0c',emissiveIntensity:.35});
+  const rubber=new THREE.MeshStandardMaterial({color:'#15191a',roughness:.7});
+  const steel=new THREE.MeshStandardMaterial({color:'#9aa19f',metalness:.85,roughness:.32});
+  const red=new THREE.MeshPhysicalMaterial({color:'#C2553C',roughness:.35,clearcoat:.6});
+  const dark=new THREE.MeshStandardMaterial({color:'#2a302e',roughness:.6});
+
+  const pad=new THREE.Group(); scene.add(pad);
+  const add=(geo,mat,x,y,z,o={})=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=o.cast!==false;m.receiveShadow=true;if(o.rx)m.rotation.x=o.rx;if(o.rz)m.rotation.z=o.rz;(o.to||pad).add(m);return m;};
+  const rbox=(lx,ly,lz,r,mat,x,y,z)=>add(new RoundedBoxGeometry(lx,ly,lz,6,r),mat,x,y,z);
+
+  // body: console block, two side rails, recessed bed between them
+  rbox(23.5,14.5,60,3.4,sage,-58.25,2+7.25,0);
+  rbox(117,10.2,6.6,2.5,sage,11.5,2+5.1,26.7);
+  rbox(117,10.2,6.6,2.5,sage,11.5,2+5.1,-26.7);
+  add(new THREE.BoxGeometry(116,6.8,47),bed,11.5,2+3.4,0);
+  rbox(139,2.4,58,1,new THREE.MeshStandardMaterial({color:'#7f9586',roughness:.7}),0,2.2,0);
+  // control panel: glossy black glass with five gold rings
+  rbox(10.6,.7,40,.3,glass,-61.2,16.42,0);
+  const ring=new THREE.TorusGeometry(1.45,.17,10,40), dot=new THREE.SphereGeometry(.32,12,8);
+  for(let k=0;k<5;k++){const z=13-k*6.5; add(ring,gold,-61.2,16.8,z,{rx:-Math.PI/2,cast:false}); add(dot,gold,-61.2,16.78,z,{cast:false});}
+  // side details on the near rail: red release button and the port
+  add(new THREE.CylinderGeometry(1.5,1.5,.9,28),red,-40,6.6,30.1,{rx:Math.PI/2,cast:false});
+  const pulse=add(new THREE.TorusGeometry(1.5,.14,8,40),new THREE.MeshBasicMaterial({color:'#E07A5F',transparent:true,opacity:0}),-40,6.6,30.25,{cast:false});
+  add(new THREE.CylinderGeometry(1.05,1.05,.6,24),new THREE.MeshStandardMaterial({color:'#050707',roughness:.9}),-8,7.4,30.05,{rx:Math.PI/2,cast:false});
+  // wheels at the front, rubber feet under the console
+  for(const z of [31.4,-31.4]){add(new THREE.CylinderGeometry(3,3,2.4,36),rubber,63,3,z,{rx:Math.PI/2});add(new THREE.CylinderGeometry(1.2,1.2,2.7,20),steel,63,3,z,{rx:Math.PI/2});}
+  for(const [x,z] of [[-64,22],[-64,-22],[48,22],[48,-22]]) add(new THREE.CylinderGeometry(2.2,2.4,2,20),rubber,x,1,z);
+
+  // treads: a slab, a rounded nose over the front roller, and instanced cone nodes
+  const {BX0,BL,BY,BW,RB,COLS,ROWS}=R, MAXN=COLS*ROWS;
+  const nodeGeo=(r,h)=>new THREE.LatheGeometry([[r,0],[r*.97,h*.12],[r*.8,h*.4],[r*.55,h*.68],[r*.3,h*.88],[r*.12,h*.98],[0,h]].map(([x,y])=>new THREE.Vector2(x,y)),18);
+  function makeTread(belt,node,r,h){
+    const g=new THREE.Group(), bm=new THREE.MeshStandardMaterial({color:belt,roughness:.78,envMapIntensity:.5}), nm=new THREE.MeshPhysicalMaterial({color:node,roughness:.55,clearcoat:.25,envMapIntensity:.5});
+    const slab=add(new THREE.BoxGeometry(1,1.4,2*BW),bm,0,-.7,0,{to:g});
+    const nose=add(new THREE.CylinderGeometry(RB,RB,2*BW,32),bm,0,-RB,0,{to:g,rx:Math.PI/2});
+    const nodes=new THREE.InstancedMesh(nodeGeo(r,h),nm,MAXN); nodes.castShadow=nodes.receiveShadow=true; g.add(nodes);
+    pad.add(g); return {g,slab,nose,nodes,mats:[bm,nm]};
+  }
+  const treads={beginner:makeTread('#7F9E89','#8DAD97',1.25,1.05),general:makeTread('#2A4234','#34503D',1.6,1.9)};
+  // roller unit, shown while it is lifted out
+  const unit=new THREE.Group(); pad.add(unit);
+  const rollers=[0,1].map(()=>add(new THREE.CylinderGeometry(1.4,1.4,46,24),steel,0,-1.3,0,{to:unit,rx:Math.PI/2}));
+  const arms=[23.5,-23.5].map(z=>add(new THREE.BoxGeometry(1,1.2,1.2),dark,0,-1.3,z,{to:unit}));
+
+  const dummy=new THREE.Object3D();
+  function setTread(t,st,lift,alpha){
+    t.g.visible=alpha>.01; if(!t.g.visible) return;
+    const isUnit=st.theta>.01||lift>.1||st.shrink>.1, len=BL-st.shrink;
+    t.g.position.set(BX0,BY+lift,0); t.g.rotation.z=st.theta;
+    t.slab.scale.set(len+(isUnit?2:0),isUnit?1.7:1,1); t.slab.position.set(len/2,isUnit?-1.2:-.7,0);
+    t.nose.visible=!isUnit; t.nose.position.x=len;
+    const P=BL+RB*Math.PI; let n=0;
+    for(let r=0;r<ROWS;r++){const z=-(BW-1.6)+r*2*(BW-1.6)/(ROWS-1), stg=(r%2)*P/COLS/2;
+      for(let i=0;i<COLS;i++){const u=((i*P/COLS+stg+st.off)%P+P)%P; let x,y,a=0,h;
+        if(u<=len){x=u;y=0;h=Math.min(1,u/3);if(isUnit)h=Math.min(h,(len-u)/3);}
+        else if(!isUnit&&u<len+RB*1.5){a=(u-len)/RB;x=len+RB*Math.sin(a);y=-RB+RB*Math.cos(a);h=.15+.85*Math.cos(a);}
+        else continue;
+        if(h<=.05) continue;
+        dummy.position.set(x,y,z); dummy.rotation.set(0,0,-a); dummy.scale.setScalar(h); dummy.updateMatrix(); t.nodes.setMatrixAt(n++,dummy.matrix);}}
+    t.nodes.count=n; t.nodes.instanceMatrix.needsUpdate=true;
+    for(const m of t.mats){m.transparent=alpha<.999;m.opacity=alpha;}
+  }
+
+  let cw=0,ch=0;
+  function size(){cw=stage.clientWidth;ch=stage.clientHeight;renderer.setSize(cw,ch,false);}
+  size(); addEventListener('resize',()=>{size();R.update();});
+
+  window.SW3D={render(p){
+    const st=R.stateAt(p),[yaw,pitch,zoom]=R.cam(p),D=420;
+    const cyw=Math.cos(yaw),syw=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+    camera.position.set(-D*cp*syw,D*sp,D*cp*cyw); camera.lookAt(0,0,0);
+    const wide=cw>860, CX=wide?cw*.66:cw*.5, CY=wide?ch*.5:ch*.34;
+    const F=Math.min(wide?cw*.42:cw*.8,ch*.9)*D/150*zoom;
+    camera.fov=2*Math.atan(ch/2/F)*180/Math.PI; camera.aspect=cw/ch;
+    camera.setViewOffset(cw,ch,cw/2-CX,ch/2-CY,cw,ch); camera.updateProjectionMatrix();
+    // tread swap: the beginner tread lifts away, the general-use tread drops in
+    const e=t=>t<.5?2*t*t:1-((-2*t+2)**2)/2, c=(v,a,b)=>Math.max(a,Math.min(b,v));
+    if(st.swap<.5){setTread(treads.beginner,st,40*e(c(st.swap/.5,0,1)),1-c(st.swap/.5,0,1));treads.general.g.visible=false;}
+    else{setTread(treads.general,st,40*(1-e(c((st.swap-.5)/.5,0,1))),c((st.swap-.5)/.4,0,1));treads.beginner.g.visible=false;}
+    const lifted=st.theta>.01||st.shrink>.1;
+    unit.visible=lifted; if(lifted){const len=BL-st.shrink;unit.position.set(BX0,BY,0);unit.rotation.z=st.theta;rollers[0].position.x=0;rollers[1].position.x=len;arms.forEach(a=>{a.scale.x=len;a.position.x=len/2;});}
+    pulse.visible=st.glow>0; pulse.scale.setScalar(1+st.glow*3); pulse.material.opacity=(1-st.glow)*.9;
+    renderer.render(scene,camera);
+    return st;
+  }};
+  R.update();
+}
 </script>
 
 </body>
