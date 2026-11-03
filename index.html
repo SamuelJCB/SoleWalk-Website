@@ -8,12 +8,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="SoleWalk · The Acupressure Walking Pad">
 <meta property="og:description" content="A foot massage while you walk.">
-<meta property="og:image" content="img/share.jpg">
+<meta property="og:url" content="https://samueljcb.github.io/SoleWalk-Website/">
+<meta property="og:image" content="https://samueljcb.github.io/SoleWalk-Website/img/share.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#EDF1EB">
 <link rel="icon" href="img/logo.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")</script>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
@@ -162,7 +164,15 @@ section[id]{scroll-margin-top:var(--nav-h)}
 #feel .sec-head{margin-bottom:28px}
 .feel{display:grid;grid-template-columns:7fr 5fr;gap:20px;flex:1;min-height:0}
 .feel figure{margin:0;border-radius:28px;overflow:hidden;position:relative;min-width:0;background:var(--surface)}
+.feel figure.split{background:transparent}
 .feel img{display:block;width:100%;height:100%;object-fit:cover}
+/* the two treads share one frame: same shot, so the halves line up into one picture. On desktop the seam follows the mouse. */
+.feel .split img{position:absolute;inset:0}
+@property --split{syntax:"<percentage>";inherits:true;initial-value:50%}
+.feel .split{transition:--split 1.6s cubic-bezier(.45,0,.25,1)}
+.feel .split.live{transition:--split .12s linear}
+.feel .split .over{clip-path:inset(0 0 0 var(--split,50%))}
+.feel .split::after{content:"";position:absolute;top:0;bottom:0;left:var(--split,50%);width:1.5px;translate:-50% 0;background:rgba(255,255,255,.7);pointer-events:none}
 .feel-points{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,44px)}
 .feel-points li{display:grid;gap:8px;align-content:start;padding-top:18px;border-top:1px solid var(--line)}
 .feel-points b{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;line-height:1.2}
@@ -219,14 +229,18 @@ section[id]{scroll-margin-top:var(--nav-h)}
 .cmp-cell .nl{font-size:.92rem;color:var(--muted);font-style:italic}
 .cmp-note{max-width:1000px;margin:18px auto 0;font-size:.85rem;color:var(--muted);text-align:center}
 
-/* Solewalk details strip */
-.extras{max-width:1000px;margin:72px auto 0}
-.extras h3{font-size:1.6rem;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:8px}
-.extras ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(16px,3vw,40px)}
-@media (max-width:700px){.extras ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.extras li{display:grid;justify-items:center;text-align:center;gap:10px;padding:30px 0;border-bottom:1px solid var(--line)}
-.extras li b{font-weight:600;line-height:1.35}
-.extras li span{font-size:.92rem;color:var(--muted);line-height:1.4}
+/* Solewalk details: one soft panel split into six open cells, with alternate cells lightly tinted like a checkerboard */
+.extras{max-width:1000px;margin:88px auto 0}
+.extras h3{font-size:1.6rem;margin-bottom:22px;text-align:center}
+.extras ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:28px;overflow:hidden;background:var(--surface)}
+.extras li{display:grid;align-content:start;justify-items:start;text-align:left;gap:6px;padding:30px 30px 32px}
+.extras li:nth-child(odd){background:color-mix(in srgb,var(--sage) 16%,var(--surface))}
+.extras .cmp-ico{width:38px;height:38px;color:var(--sage-deep);stroke-width:2.4;margin-bottom:10px}
+.extras li b{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;line-height:1.25}
+.extras li span{font-size:.92rem;color:var(--muted);line-height:1.45}
+@media (max-width:760px){.extras ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .extras li:nth-child(odd){background:none}.extras li:nth-child(4n+1),.extras li:nth-child(4n+4){background:color-mix(in srgb,var(--sage) 16%,var(--surface))}
+  .extras li{padding:22px 18px 24px}.extras li b{font-size:1rem}.extras li span{font-size:.85rem}.extras .cmp-ico{width:32px;height:32px}}
 
 /* finale: reserve + footer fill exactly one screen on a dark stage */
 .finale{position:relative;overflow:hidden;display:flex;flex-direction:column;
@@ -338,7 +352,10 @@ footer small{color:var(--muted);font-size:.9rem}
       </div>
       <div class="feel">
         <figure class="f1"><img src="img/socks-desk.jpg" alt="A walker in white socks stepping onto the Solewalk acupressure track near a standing desk" loading="lazy"></figure>
-        <figure class="f2"><img src="img/spikes.jpg" alt="Close-up of the cone-shaped acupressure nodes on the sage tread" loading="lazy"></figure>
+        <figure class="f2 split">
+          <img src="img/tread-gentle.jpg" alt="The beginner tread: sage green with rounded domes" loading="lazy">
+          <img class="over" src="img/tread-intense.jpg" alt="The general-use tread: deep forest green with firmer spikes" loading="lazy">
+        </figure>
       </div>
       <ul class="feel-points">
         <li><b>Rounded, not sharp.</b><span>The certified acupressurists we interviewed favored consistent, gentle nodes over sharp, varied spikes.</span></li>
@@ -774,17 +791,17 @@ function renderCmp(){
 }
 renderCmp();
 document.getElementById('extras').innerHTML=[
+  ['size','4.5 ft × 2.5 ft','About 4 in tall'],
   ['display','Display and remote','Time, speed and distance'],
   ['bar','Optional handlebar','Detaches when you do not need it'],
   ['roll','Rolls like a suitcase','Tilts on its side and slides under the sofa'],
-  ['size','4.5 ft × 2.5 ft','About 4 in tall'],
   ['build','Silicone over polyester mesh','Nodes formed in the same pour'],
   ['cord','6 ft power cord','']
 ].map(([i,t,d])=>`<li>${svgI(ICON[i])}<b>${t}</b>${d?`<span>${d}</span>`:''}</li>`).join('');
 
 /* ---------- scroll animations ---------- */
 if(document.documentElement.classList.contains('anim')){
-  const groups=['.sec-head > *','.feel figure','.feel-points li','.gal-head > *','.gal-card','.cmp-head > :not(.cmp-art)','.cmp-art > *','.cmp-row > .cmp-cell','.cmp-sum','.extras h3','.extras li'];
+  const groups=['.sec-head > *','.feel figure','.feel-points li','.gal-head > *','.gal-card','.cmp-head > :not(.cmp-art)','.cmp-art > *','.cmp-row > .cmp-cell','.cmp-sum','.extras h3','.extras ul'];
   groups.forEach(sel=>{
     document.querySelectorAll(sel).forEach(el=>{
       if(el.classList.contains('rv')) return;
@@ -834,6 +851,15 @@ document.addEventListener('click',e=>{
   scrollTo({top:y,behavior:reduce?'instant':'smooth'});
   history.replaceState(null,'','#'+id);
 });
+
+/* ---------- tread split: the seam follows the mouse, then settles back to the middle ---------- */
+{
+  const f=document.querySelector('.feel .split');
+  if(f&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+    f.addEventListener('pointermove',e=>{const r=f.getBoundingClientRect();f.classList.add('live');f.style.setProperty('--split',Math.min(88,Math.max(12,(e.clientX-r.left)/r.width*100)).toFixed(1)+'%');});
+    f.addEventListener('pointerleave',()=>{f.classList.remove('live');f.style.setProperty('--split','50%');});
+  }
+}
 
 /* ---------- nav bar: dark while it sits over a dark section ---------- */
 {
