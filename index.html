@@ -14,6 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#EDF1EB">
+<meta name="color-scheme" content="light only">
 <link rel="icon" href="img/logo.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")</script>
@@ -37,15 +38,8 @@
   --accent:linear-gradient(100deg,#3D5948 0%,#6E9A7E 48%,#B9864C 100%);
   --accent-dark:linear-gradient(100deg,#A8C6B0 0%,#CFE0D3 45%,#D9AE77 100%);
   --nav-h:64px;
+  color-scheme:light only;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#111614; --accent:linear-gradient(100deg,#A8C6B0 0%,#CFE0D3 45%,#D9AE77 100%); --surface:#18201C; --ink:#E3E9E2; --muted:#9AA79F;
-  --sage:#6E8B76; --sage-deep:#A8C6B0; --wood:#D3A673; --alert:#E07A5F;
-  --line:rgba(227,233,226,.13); --shadow:0 30px 60px -30px rgba(0,0,0,.7); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#111614; --accent:linear-gradient(100deg,#A8C6B0 0%,#CFE0D3 45%,#D9AE77 100%); --surface:#18201C; --ink:#E3E9E2; --muted:#9AA79F;
-  --sage:#6E8B76; --sage-deep:#A8C6B0; --wood:#D3A673; --alert:#E07A5F;
-  --line:rgba(227,233,226,.13); --shadow:0 30px 60px -30px rgba(0,0,0,.7); color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -73,8 +67,6 @@ header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 .nav .wrap{max-width:1080px;display:flex;align-items:center;justify-content:space-between;gap:16px;height:calc(var(--nav-h) - 1px)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav .brand .logo{display:block;width:48px;height:auto}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nav .brand .logo{filter:invert(1) brightness(.92)}}
-:root[data-theme="dark"] .nav .brand .logo{filter:invert(1) brightness(.92)}
 .brand b{font-family:var(--display);font-weight:800;font-size:1.45rem;letter-spacing:-.03em}
 .nav nav{display:flex;gap:26px;font-size:.95rem}
 .nav nav a{text-decoration:none;color:var(--muted)}
@@ -87,6 +79,8 @@ header.nav::before,header.nav::after{content:"";position:absolute;pointer-events
 header.nav::before{inset:0 0 -1px;z-index:-1;background:color-mix(in srgb,#141E19 90%,transparent)}
 header.nav::after{left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(168,198,176,.45) 30%,rgba(168,198,176,.45) 70%,transparent);box-shadow:0 0 18px 2px rgba(143,174,153,.35)}
 header.nav.on-dark::before,header.nav.on-dark::after{opacity:1}
+header.nav::before{transition:opacity .7s var(--ease),background-color .7s var(--ease)}
+header.nav.on-hero::before{background:color-mix(in srgb,#3F5848 92%,transparent)}
 header.nav .btn,header.nav nav a{transition:background-color .7s var(--ease),color .7s var(--ease),transform .2s}
 header.nav .logo{transition:filter .7s var(--ease)}
 header.nav.on-dark nav a{color:#B4C2B9}
@@ -104,9 +98,7 @@ header.nav.on-dark .brand .logo{filter:invert(1) brightness(.92)}
 .hero .tagline{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,3.4vw,2.8rem);letter-spacing:-.03em;line-height:1.1;padding-bottom:.08em;background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .hero-img{position:relative;flex:1 1 0;width:100%;min-height:240px;margin-top:clamp(8px,2vh,24px)}
-.hero-img img{position:absolute;inset:0;margin:auto;display:block;width:auto;height:auto;max-width:min(800px,100%);max-height:100%;mix-blend-mode:multiply;filter:brightness(1.03)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-img img{mix-blend-mode:normal;background:#fff;border-radius:28px;box-shadow:var(--shadow);filter:none}}
-:root[data-theme="dark"] .hero-img img{mix-blend-mode:normal;background:#fff;border-radius:28px;box-shadow:var(--shadow);filter:none}
+.hero-img img{position:absolute;inset:0;margin:auto;display:block;width:auto;height:auto;max-width:min(800px,100%);max-height:100%}
 
 
 section{padding-block:96px}
@@ -205,9 +197,7 @@ section[id]{scroll-margin-top:var(--nav-h)}
 .cmp-pick.is-fixed::after{display:none}
 .cmp-pick select:focus-visible{outline:3px solid var(--wood);outline-offset:2px}
 .cmp-art{height:190px;width:100%;display:grid;place-items:center;margin-top:18px}
-.cmp-art img{max-height:190px;width:auto;max-width:100%;mix-blend-mode:multiply;filter:brightness(1.03)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cmp-art img{mix-blend-mode:normal;filter:none;background:#fff;border-radius:20px}}
-:root[data-theme="dark"] .cmp-art img{mix-blend-mode:normal;filter:none;background:#fff;border-radius:20px}
+.cmp-art img{max-height:190px;width:auto;max-width:100%;}
 .cmp-art svg{height:150px;width:auto;max-width:100%;color:var(--muted)}
 .cmp-type{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cmp-price{font-weight:600}
@@ -316,7 +306,7 @@ footer small{color:var(--muted);font-size:.9rem}
         <p class="tagline rv" style="--d:.12s">The Acupressure Walking Pad.</p>
       </div>
       <div class="hero-img">
-        <img class="rv zoom" style="--d:.2s" src="img/hero-pad.jpg" data-mask=".12 .5 .88 .5 .36" alt="Solewalk walking pad seen from the side, with its mint frame, acupressure tread and control panel" width="1599" height="499">
+        <img class="rv zoom" style="--d:.2s" src="img/hero-pad.webp" data-mask=".09 .5 .91 .5 .41" alt="Solewalk walking pad seen from the side, with its mint frame, acupressure tread and control panel" width="1531" height="428">
       </div>
     </div>
   </section>
@@ -732,7 +722,7 @@ const ART={
   mat:`<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M60 30 178 82 140 120 22 68Z"/><path d="M22 68v6l118 52v-6M178 82v6l-38 38" opacity=".7"/><g fill="currentColor" stroke="none" opacity=".75">${Array.from({length:7},(_,r)=>Array.from({length:9},(_,c)=>{const x=56+c*12.6-r*5.4,y=40+c*5.6+r*9.2;return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.8"/>`}).join('')).join('')}</g></svg>`
 };
 const P={
-  solewalk:{name:'Solewalk',type:'Walking pad + acupressure',price:'$289.99',img:'img/render.jpg',
+  solewalk:{name:'Solewalk',type:'Walking pad + acupressure',price:'$289.99',img:'img/render.webp',
     walk:['Walking pad','Low impact, so you can walk while you work'],
     massage:['Acupressure tread','Rounded nodes molded into the tread'],
     both:['Walk and massage at once','Every step presses into your soles'],
@@ -868,7 +858,8 @@ document.addEventListener('click',e=>{
 {
   const nav=document.querySelector('header.nav'), darks=[...document.querySelectorAll('.roll,.finale')];
   const check=()=>{const y=nav.getBoundingClientRect().bottom+8;
-    nav.classList.toggle('on-dark',darks.some(s=>{const r=s.getBoundingClientRect();return r.top<=y&&r.bottom>y;}));};
+    const under=darks.find(s=>{const r=s.getBoundingClientRect();return r.top<=y&&r.bottom>y;});
+    nav.classList.toggle('on-dark',!!under); nav.classList.toggle('on-hero',!!under&&under.classList.contains('hero'));};
   addEventListener('scroll',check,{passive:true}); addEventListener('resize',check); check();
 }
 
