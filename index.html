@@ -168,9 +168,6 @@ section[id]{scroll-margin-top:var(--nav-h)}
 .feel img{display:block;width:100%;height:100%;object-fit:cover}
 /* the two treads share one frame: same shot, so the halves line up into one picture. On desktop the seam follows the mouse. */
 .feel .split img{position:absolute;inset:0}
-@property --split{syntax:"<percentage>";inherits:true;initial-value:50%}
-.feel .split{transition:--split 1.6s cubic-bezier(.45,0,.25,1)}
-.feel .split.live{transition:--split .12s linear}
 .feel .split .over{clip-path:inset(0 0 0 var(--split,50%))}
 .feel .split::after{content:"";position:absolute;top:0;bottom:0;left:var(--split,50%);width:1.5px;translate:-50% 0;background:rgba(255,255,255,.7);pointer-events:none}
 .feel-points{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,44px)}
@@ -856,8 +853,14 @@ document.addEventListener('click',e=>{
 {
   const f=document.querySelector('.feel .split');
   if(f&&matchMedia('(hover:hover) and (pointer:fine)').matches){
-    f.addEventListener('pointermove',e=>{const r=f.getBoundingClientRect();f.classList.add('live');f.style.setProperty('--split',Math.min(88,Math.max(12,(e.clientX-r.left)/r.width*100)).toFixed(1)+'%');});
-    f.addEventListener('pointerleave',()=>{f.classList.remove('live');f.style.setProperty('--split','50%');});
+    // follows the mouse closely; on leave it glides back to the middle over 1.8s, starting and ending gently
+    let cur=50,target=50,raf=0,back=null;
+    const set=v=>f.style.setProperty('--split',v.toFixed(2)+'%');
+    const follow=()=>{cur+=(target-cur)*.25;set(cur);raf=Math.abs(target-cur)>.05?requestAnimationFrame(follow):0;};
+    const glide=ts=>{if(!back)return;const t=Math.min(1,(ts-back.t0)/1800),k=.5-.5*Math.cos(Math.PI*t);cur=back.from+(50-back.from)*k;set(cur);raf=t<1?requestAnimationFrame(glide):(back=null,0);};
+    f.addEventListener('pointermove',e=>{const r=f.getBoundingClientRect();target=Math.min(88,Math.max(12,(e.clientX-r.left)/r.width*100));
+      if(back){back=null;cancelAnimationFrame(raf);raf=0;} if(!raf)raf=requestAnimationFrame(follow);});
+    f.addEventListener('pointerleave',()=>{cancelAnimationFrame(raf);back={from:cur,t0:performance.now()};raf=requestAnimationFrame(glide);});
   }
 }
 
