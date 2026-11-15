@@ -66,7 +66,7 @@ a{color:inherit}
 header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav .wrap{max-width:1080px;display:flex;align-items:center;justify-content:space-between;gap:16px;height:calc(var(--nav-h) - 1px)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav .brand .logo{display:block;width:48px;height:auto}
+.nav .brand .logo{display:block;width:58px;height:auto}
 .brand b{font-family:var(--display);font-weight:800;font-size:1.45rem;letter-spacing:-.03em}
 .nav nav{display:flex;gap:26px;font-size:.95rem}
 .nav nav a{text-decoration:none;color:var(--muted)}
@@ -168,6 +168,70 @@ section[id]{scroll-margin-top:var(--nav-h)}
 .feel-points span{color:var(--muted);font-size:1rem;line-height:1.55}
 @media (max-width:760px){#feel{height:auto;min-height:0;padding-block:64px}.feel{grid-template-columns:1fr;flex:none}.feel .f1{aspect-ratio:4/5}.feel .f2{aspect-ratio:4/3}.feel-points{grid-template-columns:1fr;margin-top:32px}}
 
+/* acupressure in brief: an interactive sole map beside the copy */
+#reflex{padding-block:calc(var(--sec-gap) - 24px) 40px}
+.reflex{display:grid;grid-template-columns:6fr 5fr;gap:clamp(28px,5vw,72px);align-items:center}
+/* the chart, drawn as vector: hovering a zone or its label lights both and dims the rest */
+.chart-wrap{margin:0;display:grid;gap:10px;justify-items:center}
+.chart-wrap figcaption{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--muted);text-align:center}
+.chart{width:min(100%,640px);border-radius:24px;background:#EEF1EA;box-shadow:var(--shadow);padding:6px 4px 10px}
+.rx{display:block;width:100%;height:auto}
+.rx text{font-family:var(--body);font-size:16px;fill:#2F342F;transition:fill .35s ease}
+.rx .rx-title{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.01em;fill:var(--ink)}
+.rx .lb path{fill:none;stroke:#8C9189;stroke-width:.9;transition:stroke .35s ease,stroke-width .35s ease}
+.rx .lb circle{fill:#3A3F3A}
+.rx .edge{fill:#fff;stroke:#fff;stroke-width:12;stroke-linejoin:round;filter:url(#rxShadow)}
+.rx .z,.rx .lb{cursor:pointer;transition:opacity .4s ease,filter .4s ease}
+.rx .z:focus{outline:none}
+.rx .z:focus-visible{outline:2px solid var(--wood)}
+.rx.has .z:not(.on){opacity:.62}
+.rx.has .lb:not(.on){opacity:.6}
+.rx .z.on{filter:brightness(1.12) saturate(1.1)}
+.rx .lb.on text{fill:var(--sage-deep);font-weight:600}
+.rx .lb.on path{stroke:var(--sage-deep);stroke-width:1.8}
+.rx .lb.on circle{fill:var(--sage-deep)}
+@media (prefers-reduced-motion:reduce){.ro-part.flip{animation:none}}
+.reflex-copy{display:grid;gap:18px;align-content:center}
+.readout{display:grid;gap:4px;padding:18px 22px;border-radius:20px;background:var(--surface);border-left:4px solid var(--sage-deep)}
+.ro-area{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sage-deep)}
+.ro-part{font-family:var(--display);font-weight:700;font-size:clamp(1.4rem,2.4vw,1.8rem);letter-spacing:-.02em;line-height:1.15}
+.ro-part.flip{animation:roIn .5s cubic-bezier(.16,1,.3,1)}
+@keyframes roIn{from{opacity:0;transform:translateY(10px)}}
+.ro-hint{font-size:.88rem;color:var(--muted);margin-top:4px}
+.benefits{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.benefits li{position:relative;padding-left:32px;line-height:1.5}
+.benefits li::before{content:"";position:absolute;left:0;top:.2em;width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--sage-deep);background:radial-gradient(circle,var(--sage-deep) 3.5px,transparent 4.5px)}
+.reflex-title{font-size:clamp(1.3rem,1.9vw,1.7rem);font-weight:600;line-height:1.28;letter-spacing:-.015em;text-wrap:pretty}
+.reflex-title em{font-style:normal;font-weight:800;color:var(--sage-deep)}
+@media (max-width:760px){.reflex{grid-template-columns:1fr}}
+
+/* how to use: the brochure's four numbered steps in a row; a line draws across and each number fills as it passes */
+#use{padding-block:calc(var(--sec-gap) - 40px) 0}
+.use-head{text-align:center;justify-items:center;margin-inline:auto;margin-bottom:56px}
+.how{--line:1.6s;list-style:none;margin:0;padding:0;position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(24px,3.4vw,48px)}
+.how::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:var(--sage-deep);opacity:.35;transform-origin:left}
+.how li{position:relative;display:grid;gap:10px;align-content:start;padding-top:30px}
+.how li::before{content:"";position:absolute;top:-4.5px;left:0;width:10px;height:10px;border-radius:50%;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--sage-deep);transition:background .4s ease}
+.how .hn{font-family:var(--display);font-weight:800;font-size:clamp(3rem,5vw,4.4rem);line-height:.9;letter-spacing:-.04em;color:var(--sage);-webkit-text-stroke:1.5px var(--sage);transition:color .6s ease}
+.how h3{font-size:1.35rem;margin-top:6px}
+.how p{color:var(--muted);font-size:1rem;line-height:1.6}
+.anim .how::before{transform:scaleX(0);transition:transform var(--line) cubic-bezier(.45,0,.2,1) .2s}
+.anim .how .hn{color:transparent}
+.anim .how li::before{background:var(--bg)}
+.anim .how.in::before{transform:none}
+.anim .how.in .hn{color:var(--sage)}
+.anim .how.in li::before{background:var(--sage-deep)}
+.how li:nth-child(1) .hn,.how li:nth-child(1)::before{transition-delay:.25s}
+.how li:nth-child(2) .hn,.how li:nth-child(2)::before{transition-delay:.65s}
+.how li:nth-child(3) .hn,.how li:nth-child(3)::before{transition-delay:1.05s}
+.how li:nth-child(4) .hn,.how li:nth-child(4)::before{transition-delay:1.45s}
+.how li:hover .hn{color:var(--sage-deep);-webkit-text-stroke-color:var(--sage-deep);transition-delay:0s}
+.caution{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);display:grid;gap:8px;max-width:820px}
+.caution p{font-size:.98rem;line-height:1.6}
+.caution .sources{font-size:.82rem;color:var(--muted)}
+@media (max-width:900px){.how{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:44px}.how::before{display:none}.how li{padding-top:0}.how li::before{display:none}}
+@media (max-width:520px){.how{grid-template-columns:1fr;row-gap:36px}.use-head{margin-bottom:36px}}
+
 /* take a closer look: a sideways-scrolling row of large photos */
 .gal-head{text-align:center;margin-bottom:32px}
 .gal{--pad:max(20px,calc((100vw - var(--wrap)) / 2 + 20px));list-style:none;margin:0;padding:0 var(--pad) 8px;display:flex;gap:20px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);scrollbar-width:none;overscroll-behavior-x:contain}
@@ -200,7 +264,6 @@ section[id]{scroll-margin-top:var(--nav-h)}
 .cmp-art img{max-height:190px;width:auto;max-width:100%;}
 .cmp-art svg{height:150px;width:auto;max-width:100%;color:var(--muted)}
 .cmp-type{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.cmp-price{font-weight:600}
 .cmp-cta{min-height:44px;display:grid;place-items:center}
 .cmp-cta .btn{padding:.55em 1.2em;font-size:.92rem}
 .cmp-cta span{font-size:.9rem;color:var(--muted)}
@@ -291,8 +354,8 @@ footer small{color:var(--muted);font-size:.9rem}
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Solewalk home"><img class="logo" src="img/logo.png" alt="" width="48" height="49"></a>
-    <nav aria-label="Sections"><a href="#belts">Interchangeable treads</a><a href="#feel">Acupressure points</a><a href="#gallery">Closer look</a><a href="#compare">Compare</a></nav>
+    <a class="brand" href="#top" aria-label="Solewalk home"><img class="logo" src="img/logo.png" alt="" width="58" height="58"></a>
+    <nav aria-label="Sections"><a href="#belts">Interchangeable treads</a><a href="#reflex">Acupressure points</a><a href="#use">How to use</a><a href="#gallery">Closer look</a><a href="#compare">Compare</a></nav>
     <a class="btn btn-primary" href="#reserve">Reserve</a>
   </div>
 </header>
@@ -306,7 +369,7 @@ footer small{color:var(--muted);font-size:.9rem}
         <p class="tagline rv" style="--d:.12s">The Acupressure Walking Pad.</p>
       </div>
       <div class="hero-img">
-        <img class="rv zoom" style="--d:.2s" src="img/hero-pad.webp" data-mask=".09 .5 .91 .5 .41" alt="Solewalk walking pad seen from the side, with its mint frame, acupressure tread and control panel" width="1531" height="428">
+        <img class="rv zoom" style="--d:.2s" src="img/hero-pad.webp" data-mask=".09 .5 .91 .5 .41" alt="Solewalk walking pad seen from the side, with its mint frame, acupressure tread and control panel" width="1800" height="475">
       </div>
     </div>
   </section>
@@ -352,6 +415,47 @@ footer small{color:var(--muted);font-size:.9rem}
     </div>
   </section>
 
+  <section id="reflex" aria-labelledby="reflexTitle">
+    <div class="wrap reflex">
+      <figure class="chart-wrap">
+        <div class="chart" id="chart">
+          <svg class="rx" id="rx" viewBox="28 112 756 858" role="group" aria-labelledby="rxT"><title id="rxT">Foot reflexology chart: each area of the sole and top of the foot maps to a part of the body</title><defs><clipPath id="soleL"><path d="M196.0 330.0C191.0 334.7 186.0 340.8 182.0 350.0C178.0 359.2 174.0 373.3 172.0 385.0C170.0 396.7 169.0 408.3 170.0 420.0C171.0 431.7 174.3 443.3 178.0 455.0C181.7 466.7 188.5 477.5 192.0 490.0C195.5 502.5 197.5 515.8 199.0 530.0C200.5 544.2 200.3 560.0 201.0 575.0C201.7 590.0 201.3 606.7 203.0 620.0C204.7 633.3 206.2 645.0 211.0 655.0C215.8 665.0 223.5 674.2 232.0 680.0C240.5 685.8 252.0 689.7 262.0 690.0C272.0 690.3 284.0 687.3 292.0 682.0C300.0 676.7 306.3 667.5 310.0 658.0C313.7 648.5 314.3 637.2 314.0 625.0C313.7 612.8 309.8 599.2 308.0 585.0C306.2 570.8 303.3 555.0 303.0 540.0C302.7 525.0 303.5 510.0 306.0 495.0C308.5 480.0 314.0 464.2 318.0 450.0C322.0 435.8 326.3 423.3 330.0 410.0C333.7 396.7 337.5 382.5 340.0 370.0C342.5 357.5 345.0 345.0 345.0 335.0C345.0 325.0 344.5 315.8 340.0 310.0C335.5 304.2 326.3 301.3 318.0 300.0C309.7 298.7 299.3 300.7 290.0 302.0C280.7 303.3 271.3 305.7 262.0 308.0C252.7 310.3 242.3 313.7 234.0 316.0C225.7 318.3 218.3 319.7 212.0 322.0C205.7 324.3 201.0 325.3 196.0 330.0Z"/></clipPath><clipPath id="soleR"><path d="M616.0 330.0C621.0 334.7 626.0 340.8 630.0 350.0C634.0 359.2 638.0 373.3 640.0 385.0C642.0 396.7 643.0 408.3 642.0 420.0C641.0 431.7 637.7 443.3 634.0 455.0C630.3 466.7 623.5 477.5 620.0 490.0C616.5 502.5 614.5 515.8 613.0 530.0C611.5 544.2 611.7 560.0 611.0 575.0C610.3 590.0 610.7 606.7 609.0 620.0C607.3 633.3 605.8 645.0 601.0 655.0C596.2 665.0 588.5 674.2 580.0 680.0C571.5 685.8 560.0 689.7 550.0 690.0C540.0 690.3 528.0 687.3 520.0 682.0C512.0 676.7 505.7 667.5 502.0 658.0C498.3 648.5 497.7 637.2 498.0 625.0C498.3 612.8 502.2 599.2 504.0 585.0C505.8 570.8 508.7 555.0 509.0 540.0C509.3 525.0 508.5 510.0 506.0 495.0C503.5 480.0 498.0 464.2 494.0 450.0C490.0 435.8 485.7 423.3 482.0 410.0C478.3 396.7 474.5 382.5 472.0 370.0C469.5 357.5 467.0 345.0 467.0 335.0C467.0 325.0 467.5 315.8 472.0 310.0C476.5 304.2 485.7 301.3 494.0 300.0C502.3 298.7 512.7 300.7 522.0 302.0C531.3 303.3 540.7 305.7 550.0 308.0C559.3 310.3 569.7 313.7 578.0 316.0C586.3 318.3 593.7 319.7 600.0 322.0C606.3 324.3 611.0 325.3 616.0 330.0Z"/></clipPath><filter id="rxShadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#2E4A3B" flood-opacity=".16"/></filter></defs><text class="rx-title" x="406" y="146" text-anchor="middle">Foot Reflexology Chart</text><g class="feet"><g class="edge"><path d="M196.0 330.0C191.0 334.7 186.0 340.8 182.0 350.0C178.0 359.2 174.0 373.3 172.0 385.0C170.0 396.7 169.0 408.3 170.0 420.0C171.0 431.7 174.3 443.3 178.0 455.0C181.7 466.7 188.5 477.5 192.0 490.0C195.5 502.5 197.5 515.8 199.0 530.0C200.5 544.2 200.3 560.0 201.0 575.0C201.7 590.0 201.3 606.7 203.0 620.0C204.7 633.3 206.2 645.0 211.0 655.0C215.8 665.0 223.5 674.2 232.0 680.0C240.5 685.8 252.0 689.7 262.0 690.0C272.0 690.3 284.0 687.3 292.0 682.0C300.0 676.7 306.3 667.5 310.0 658.0C313.7 648.5 314.3 637.2 314.0 625.0C313.7 612.8 309.8 599.2 308.0 585.0C306.2 570.8 303.3 555.0 303.0 540.0C302.7 525.0 303.5 510.0 306.0 495.0C308.5 480.0 314.0 464.2 318.0 450.0C322.0 435.8 326.3 423.3 330.0 410.0C333.7 396.7 337.5 382.5 340.0 370.0C342.5 357.5 345.0 345.0 345.0 335.0C345.0 325.0 344.5 315.8 340.0 310.0C335.5 304.2 326.3 301.3 318.0 300.0C309.7 298.7 299.3 300.7 290.0 302.0C280.7 303.3 271.3 305.7 262.0 308.0C252.7 310.3 242.3 313.7 234.0 316.0C225.7 318.3 218.3 319.7 212.0 322.0C205.7 324.3 201.0 325.3 196.0 330.0Z"/><ellipse cx="318.0" cy="266" rx="27" ry="38" transform="rotate(6 318.0 266)"/><ellipse cx="277.0" cy="284" rx="15" ry="22" transform="rotate(-4 277.0 284)"/><ellipse cx="248.0" cy="296" rx="14" ry="20" transform="rotate(-8 248.0 296)"/><ellipse cx="222.0" cy="309" rx="13" ry="18" transform="rotate(-13 222.0 309)"/><ellipse cx="200.0" cy="324" rx="12" ry="15" transform="rotate(-22 200.0 324)"/></g><path d="M196.0 330.0C191.0 334.7 186.0 340.8 182.0 350.0C178.0 359.2 174.0 373.3 172.0 385.0C170.0 396.7 169.0 408.3 170.0 420.0C171.0 431.7 174.3 443.3 178.0 455.0C181.7 466.7 188.5 477.5 192.0 490.0C195.5 502.5 197.5 515.8 199.0 530.0C200.5 544.2 200.3 560.0 201.0 575.0C201.7 590.0 201.3 606.7 203.0 620.0C204.7 633.3 206.2 645.0 211.0 655.0C215.8 665.0 223.5 674.2 232.0 680.0C240.5 685.8 252.0 689.7 262.0 690.0C272.0 690.3 284.0 687.3 292.0 682.0C300.0 676.7 306.3 667.5 310.0 658.0C313.7 648.5 314.3 637.2 314.0 625.0C313.7 612.8 309.8 599.2 308.0 585.0C306.2 570.8 303.3 555.0 303.0 540.0C302.7 525.0 303.5 510.0 306.0 495.0C308.5 480.0 314.0 464.2 318.0 450.0C322.0 435.8 326.3 423.3 330.0 410.0C333.7 396.7 337.5 382.5 340.0 370.0C342.5 357.5 345.0 345.0 345.0 335.0C345.0 325.0 344.5 315.8 340.0 310.0C335.5 304.2 326.3 301.3 318.0 300.0C309.7 298.7 299.3 300.7 290.0 302.0C280.7 303.3 271.3 305.7 262.0 308.0C252.7 310.3 242.3 313.7 234.0 316.0C225.7 318.3 218.3 319.7 212.0 322.0C205.7 324.3 201.0 325.3 196.0 330.0Z" fill="#CFDCC9"/><g class="z" data-k="head"><ellipse cx="318.0" cy="266" rx="27" ry="38" transform="rotate(6 318.0 266)" fill="#BFD0BA"/><ellipse cx="277.0" cy="284" rx="15" ry="22" transform="rotate(-4 277.0 284)" fill="#BFD0BA"/><ellipse cx="248.0" cy="296" rx="14" ry="20" transform="rotate(-8 248.0 296)" fill="#BFD0BA"/><ellipse cx="222.0" cy="309" rx="13" ry="18" transform="rotate(-13 222.0 309)" fill="#BFD0BA"/><ellipse cx="200.0" cy="324" rx="12" ry="15" transform="rotate(-22 200.0 324)" fill="#BFD0BA"/><circle cx="318" cy="262" r="6" fill="#fff"/><circle cx="318" cy="262" r="2.6" fill="#4F6E5C"/></g><g clip-path="url(#soleL)"><g class="z" data-k="eyes"><path d="M140 250L298 250L298 318Q230 320 140 356Z" fill="#A9C0A8" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="neck"><path d="M298 296L360 296L360 322Q330 327 298 322Z" fill="#4F6E5C" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="chest"><path d="M140 356Q230 320 298 322Q330 327 360 322L360 410Q250 404 140 420Z" fill="#7E9F89" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="shoulder"><ellipse cx="176" cy="372" rx="17" ry="36" fill="#A5BDA9" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="liver"><path d="M140 420Q250 404 360 410L360 500Q250 492 140 506Z" fill="#5E8270" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M212 440C222 446 222 458 213 461C204 458 204 448 212 440Z" fill="#D39A55"/></g><g class="z" data-k="diaphragm"><path d="M140 420Q250 404 360 410" fill="none" stroke="#D39A55" stroke-width="6" stroke-linecap="round"/><circle cx="300" cy="409" r="7" fill="#E3B87F" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="gut"><path d="M140 506Q250 492 360 500L360 606Q250 616 140 604Z" fill="#B3C8B1" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M214 528H270Q282 528 282 540Q282 552 270 552H226Q214 552 214 564Q214 576 226 576H276" fill="none" stroke="#7E9F89" stroke-width="5" stroke-linecap="round"/></g><g class="z" data-k="bladder"><ellipse cx="277" cy="586" rx="11" ry="15" fill="#5E8270" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="sciatic"><path d="M140 604Q250 616 360 606L360 624Q250 634 140 622Z" fill="#5E8270" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M140 622Q250 634 360 624L360 700L140 700Z" fill="#000" fill-opacity=".001"/></g></g><g class="z" data-k="kidney"><path d="M262 494Q282 530 276 572" fill="none" stroke="#3F5C4B" stroke-width="3" stroke-linecap="round"/><path d="M250.0 452.0C254.7 451.3 264.3 453.7 268.0 458.0C271.7 462.3 272.7 471.0 272.0 478.0C271.3 485.0 268.0 495.7 264.0 500.0C260.0 504.3 252.3 506.0 248.0 504.0C243.7 502.0 238.3 493.0 238.0 488.0C237.7 483.0 245.7 478.3 246.0 474.0C246.3 469.7 239.3 465.7 240.0 462.0C240.7 458.3 245.3 452.7 250.0 452.0Z" fill="#3F5C4B" stroke="#EEF1EA" stroke-width="2"/><ellipse cx="260" cy="447" rx="10" ry="6" transform="rotate(-20 260 447)" fill="#D39A55" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="spine"><g fill="#3D5948" stroke="#EEF1EA" stroke-width="1.5"><rect x="327.0" y="325.5" width="12" height="9" rx="3.5" transform="rotate(7.1 333.0 330.0)"/><rect x="325.3" y="339.1" width="12" height="9" rx="3.5" transform="rotate(7.1 331.3 343.6)"/><rect x="323.6" y="352.3" width="12" height="9" rx="3.5" transform="rotate(7.1 329.6 356.8)"/><rect x="322.0" y="365.5" width="12" height="9" rx="3.5" transform="rotate(12.7 328.0 370.0)"/><rect x="318.9" y="379.1" width="12" height="9" rx="3.5" transform="rotate(12.7 324.9 383.6)"/><rect x="316.0" y="392.3" width="12" height="9" rx="3.5" transform="rotate(12.7 322.0 396.8)"/><rect x="313.0" y="405.5" width="12" height="9" rx="3.5" transform="rotate(16.7 319.0 410.0)"/><rect x="308.9" y="419.1" width="12" height="9" rx="3.5" transform="rotate(16.7 314.9 423.6)"/><rect x="305.0" y="432.3" width="12" height="9" rx="3.5" transform="rotate(16.7 311.0 436.8)"/><rect x="301.0" y="445.5" width="12" height="9" rx="3.5" transform="rotate(13.7 307.0 450.0)"/><rect x="297.3" y="460.8" width="12" height="9" rx="3.5" transform="rotate(13.7 303.3 465.3)"/><rect x="293.6" y="475.6" width="12" height="9" rx="3.5" transform="rotate(13.7 299.6 480.1)"/><rect x="290.0" y="490.5" width="12" height="9" rx="3.5" transform="rotate(5.1 296.0 495.0)"/><rect x="288.6" y="505.8" width="12" height="9" rx="3.5" transform="rotate(5.1 294.6 510.3)"/><rect x="287.3" y="520.6" width="12" height="9" rx="3.5" transform="rotate(5.1 293.3 525.1)"/><rect x="286.0" y="535.5" width="12" height="9" rx="3.5" transform="rotate(-5.1 292.0 540.0)"/><rect x="287.4" y="550.8" width="12" height="9" rx="3.5" transform="rotate(-5.1 293.4 555.3)"/><rect x="288.7" y="565.6" width="12" height="9" rx="3.5" transform="rotate(-5.1 294.7 570.1)"/><rect x="290.0" y="580.5" width="12" height="9" rx="3.5" transform="rotate(-7.1 296.0 585.0)"/><rect x="291.7" y="594.1" width="12" height="9" rx="3.5" transform="rotate(-7.1 297.7 598.6)"/><rect x="293.4" y="607.3" width="12" height="9" rx="3.5" transform="rotate(-7.1 299.4 611.8)"/></g></g><g class="edge"><path d="M616.0 330.0C621.0 334.7 626.0 340.8 630.0 350.0C634.0 359.2 638.0 373.3 640.0 385.0C642.0 396.7 643.0 408.3 642.0 420.0C641.0 431.7 637.7 443.3 634.0 455.0C630.3 466.7 623.5 477.5 620.0 490.0C616.5 502.5 614.5 515.8 613.0 530.0C611.5 544.2 611.7 560.0 611.0 575.0C610.3 590.0 610.7 606.7 609.0 620.0C607.3 633.3 605.8 645.0 601.0 655.0C596.2 665.0 588.5 674.2 580.0 680.0C571.5 685.8 560.0 689.7 550.0 690.0C540.0 690.3 528.0 687.3 520.0 682.0C512.0 676.7 505.7 667.5 502.0 658.0C498.3 648.5 497.7 637.2 498.0 625.0C498.3 612.8 502.2 599.2 504.0 585.0C505.8 570.8 508.7 555.0 509.0 540.0C509.3 525.0 508.5 510.0 506.0 495.0C503.5 480.0 498.0 464.2 494.0 450.0C490.0 435.8 485.7 423.3 482.0 410.0C478.3 396.7 474.5 382.5 472.0 370.0C469.5 357.5 467.0 345.0 467.0 335.0C467.0 325.0 467.5 315.8 472.0 310.0C476.5 304.2 485.7 301.3 494.0 300.0C502.3 298.7 512.7 300.7 522.0 302.0C531.3 303.3 540.7 305.7 550.0 308.0C559.3 310.3 569.7 313.7 578.0 316.0C586.3 318.3 593.7 319.7 600.0 322.0C606.3 324.3 611.0 325.3 616.0 330.0Z"/><ellipse cx="494.0" cy="266" rx="27" ry="38" transform="rotate(-6 494.0 266)"/><ellipse cx="535.0" cy="284" rx="15" ry="22" transform="rotate(4 535.0 284)"/><ellipse cx="564.0" cy="296" rx="14" ry="20" transform="rotate(8 564.0 296)"/><ellipse cx="590.0" cy="309" rx="13" ry="18" transform="rotate(13 590.0 309)"/><ellipse cx="612.0" cy="324" rx="12" ry="15" transform="rotate(22 612.0 324)"/></g><path d="M616.0 330.0C621.0 334.7 626.0 340.8 630.0 350.0C634.0 359.2 638.0 373.3 640.0 385.0C642.0 396.7 643.0 408.3 642.0 420.0C641.0 431.7 637.7 443.3 634.0 455.0C630.3 466.7 623.5 477.5 620.0 490.0C616.5 502.5 614.5 515.8 613.0 530.0C611.5 544.2 611.7 560.0 611.0 575.0C610.3 590.0 610.7 606.7 609.0 620.0C607.3 633.3 605.8 645.0 601.0 655.0C596.2 665.0 588.5 674.2 580.0 680.0C571.5 685.8 560.0 689.7 550.0 690.0C540.0 690.3 528.0 687.3 520.0 682.0C512.0 676.7 505.7 667.5 502.0 658.0C498.3 648.5 497.7 637.2 498.0 625.0C498.3 612.8 502.2 599.2 504.0 585.0C505.8 570.8 508.7 555.0 509.0 540.0C509.3 525.0 508.5 510.0 506.0 495.0C503.5 480.0 498.0 464.2 494.0 450.0C490.0 435.8 485.7 423.3 482.0 410.0C478.3 396.7 474.5 382.5 472.0 370.0C469.5 357.5 467.0 345.0 467.0 335.0C467.0 325.0 467.5 315.8 472.0 310.0C476.5 304.2 485.7 301.3 494.0 300.0C502.3 298.7 512.7 300.7 522.0 302.0C531.3 303.3 540.7 305.7 550.0 308.0C559.3 310.3 569.7 313.7 578.0 316.0C586.3 318.3 593.7 319.7 600.0 322.0C606.3 324.3 611.0 325.3 616.0 330.0Z" fill="#CFDCC9"/><g class="z" data-k="head"><ellipse cx="494.0" cy="266" rx="27" ry="38" transform="rotate(-6 494.0 266)" fill="#BFD0BA"/><ellipse cx="535.0" cy="284" rx="15" ry="22" transform="rotate(4 535.0 284)" fill="#BFD0BA"/><ellipse cx="564.0" cy="296" rx="14" ry="20" transform="rotate(8 564.0 296)" fill="#BFD0BA"/><ellipse cx="590.0" cy="309" rx="13" ry="18" transform="rotate(13 590.0 309)" fill="#BFD0BA"/><ellipse cx="612.0" cy="324" rx="12" ry="15" transform="rotate(22 612.0 324)" fill="#BFD0BA"/><circle cx="494" cy="262" r="6" fill="#fff"/><circle cx="494" cy="262" r="2.6" fill="#4F6E5C"/></g><g clip-path="url(#soleR)"><g class="z" data-k="eyes"><path d="M672 250L514 250L514 318Q582 320 672 356Z" fill="#A9C0A8" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="neck"><path d="M514 296L452 296L452 322Q482 327 514 322Z" fill="#4F6E5C" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="chest"><path d="M672 356Q582 320 514 322Q482 327 452 322L452 410Q562 404 672 420Z" fill="#7E9F89" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M520 377C506 368 508 356 515 357C518 357 520 360 520 362C520 360 522 357 525 357C532 356 534 368 520 377Z" fill="#C2553C"/></g><g class="z" data-k="shoulder"><ellipse cx="636" cy="372" rx="17" ry="36" fill="#A5BDA9" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/></g><g class="z" data-k="spleen"><path d="M672 420Q562 404 452 410L452 500Q562 492 672 506Z" fill="#8DAE97" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M607.0 450.0C607.0 444.3 597.8 438.3 590.0 436.0C582.2 433.7 566.7 433.7 560.0 436.0C553.3 438.3 549.7 444.7 550.0 450.0C550.3 455.3 555.3 464.7 562.0 468.0C568.7 471.3 582.5 473.0 590.0 470.0C597.5 467.0 607.0 455.7 607.0 450.0Z" fill="#5E8270"/><ellipse cx="632" cy="440" rx="11" ry="22" fill="#D39A55"/><rect x="527" y="476" width="60" height="9" rx="4.5" fill="#E3B87F"/></g><g class="z" data-k="diaphragm"><path d="M672 420Q562 404 452 410" fill="none" stroke="#D39A55" stroke-width="6" stroke-linecap="round"/><circle cx="512" cy="409" r="7" fill="#E3B87F" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="gut"><path d="M672 506Q562 492 452 500L452 606Q562 616 672 604Z" fill="#B3C8B1" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M598 528H542Q530 528 530 540Q530 552 542 552H586Q598 552 598 564Q598 576 586 576H536" fill="none" stroke="#7E9F89" stroke-width="5" stroke-linecap="round"/></g><g class="z" data-k="bladder"><ellipse cx="535" cy="586" rx="11" ry="15" fill="#5E8270" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="sciatic"><path d="M672 604Q562 616 452 606L452 624Q562 634 672 622Z" fill="#5E8270" stroke="#EEF1EA" stroke-width="3" stroke-linejoin="round"/><path d="M672 622Q562 634 452 624L452 700L672 700Z" fill="#000" fill-opacity=".001"/></g></g><g class="z" data-k="kidney"><path d="M550 494Q530 530 536 572" fill="none" stroke="#3F5C4B" stroke-width="3" stroke-linecap="round"/><path d="M562.0 452.0C557.3 451.3 547.7 453.7 544.0 458.0C540.3 462.3 539.3 471.0 540.0 478.0C540.7 485.0 544.0 495.7 548.0 500.0C552.0 504.3 559.7 506.0 564.0 504.0C568.3 502.0 573.7 493.0 574.0 488.0C574.3 483.0 566.3 478.3 566.0 474.0C565.7 469.7 572.7 465.7 572.0 462.0C571.3 458.3 566.7 452.7 562.0 452.0Z" fill="#3F5C4B" stroke="#EEF1EA" stroke-width="2"/><ellipse cx="552" cy="447" rx="10" ry="6" transform="rotate(20 552 447)" fill="#D39A55" stroke="#EEF1EA" stroke-width="2"/></g><g class="z" data-k="spine"><g fill="#3D5948" stroke="#EEF1EA" stroke-width="1.5"><rect x="473.0" y="325.5" width="12" height="9" rx="3.5" transform="rotate(-7.1 479.0 330.0)"/><rect x="474.7" y="339.1" width="12" height="9" rx="3.5" transform="rotate(-7.1 480.7 343.6)"/><rect x="476.4" y="352.3" width="12" height="9" rx="3.5" transform="rotate(-7.1 482.4 356.8)"/><rect x="478.0" y="365.5" width="12" height="9" rx="3.5" transform="rotate(-12.7 484.0 370.0)"/><rect x="481.1" y="379.1" width="12" height="9" rx="3.5" transform="rotate(-12.7 487.1 383.6)"/><rect x="484.0" y="392.3" width="12" height="9" rx="3.5" transform="rotate(-12.7 490.0 396.8)"/><rect x="487.0" y="405.5" width="12" height="9" rx="3.5" transform="rotate(-16.7 493.0 410.0)"/><rect x="491.1" y="419.1" width="12" height="9" rx="3.5" transform="rotate(-16.7 497.1 423.6)"/><rect x="495.0" y="432.3" width="12" height="9" rx="3.5" transform="rotate(-16.7 501.0 436.8)"/><rect x="499.0" y="445.5" width="12" height="9" rx="3.5" transform="rotate(-13.7 505.0 450.0)"/><rect x="502.7" y="460.8" width="12" height="9" rx="3.5" transform="rotate(-13.7 508.7 465.3)"/><rect x="506.4" y="475.6" width="12" height="9" rx="3.5" transform="rotate(-13.7 512.4 480.1)"/><rect x="510.0" y="490.5" width="12" height="9" rx="3.5" transform="rotate(-5.1 516.0 495.0)"/><rect x="511.4" y="505.8" width="12" height="9" rx="3.5" transform="rotate(-5.1 517.4 510.3)"/><rect x="512.7" y="520.6" width="12" height="9" rx="3.5" transform="rotate(-5.1 518.7 525.1)"/><rect x="514.0" y="535.5" width="12" height="9" rx="3.5" transform="rotate(5.1 520.0 540.0)"/><rect x="512.6" y="550.8" width="12" height="9" rx="3.5" transform="rotate(5.1 518.6 555.3)"/><rect x="511.3" y="565.6" width="12" height="9" rx="3.5" transform="rotate(5.1 517.3 570.1)"/><rect x="510.0" y="580.5" width="12" height="9" rx="3.5" transform="rotate(7.1 516.0 585.0)"/><rect x="508.3" y="594.1" width="12" height="9" rx="3.5" transform="rotate(7.1 514.3 598.6)"/><rect x="506.6" y="607.3" width="12" height="9" rx="3.5" transform="rotate(7.1 512.6 611.8)"/></g></g><g class="edge"><path d="M62.0 770.0C75.7 764.7 107.0 761.0 130.0 760.0C153.0 759.0 178.3 762.0 200.0 764.0C221.7 766.0 241.7 770.7 260.0 772.0C278.3 773.3 295.8 772.7 310.0 772.0C324.2 771.3 337.0 767.0 345.0 768.0C353.0 769.0 356.2 772.7 358.0 778.0C359.8 783.3 357.5 792.7 356.0 800.0C354.5 807.3 352.3 815.0 349.0 822.0C345.7 829.0 342.2 836.7 336.0 842.0C329.8 847.3 324.7 851.0 312.0 854.0C299.3 857.0 280.3 859.3 260.0 860.0C239.7 860.7 213.3 859.7 190.0 858.0C166.7 856.3 140.3 852.7 120.0 850.0C99.7 847.3 80.0 847.3 68.0 842.0C56.0 836.7 51.3 826.3 48.0 818.0C44.7 809.7 45.7 800.0 48.0 792.0C50.3 784.0 48.3 775.3 62.0 770.0Z"/><ellipse cx="356" cy="780" rx="14" ry="10"/><ellipse cx="352" cy="801" rx="12" ry="9"/><ellipse cx="345" cy="821" rx="11" ry="8.5"/><ellipse cx="334" cy="840" rx="10" ry="8"/></g><path d="M62.0 770.0C75.7 764.7 107.0 761.0 130.0 760.0C153.0 759.0 178.3 762.0 200.0 764.0C221.7 766.0 241.7 770.7 260.0 772.0C278.3 773.3 295.8 772.7 310.0 772.0C324.2 771.3 337.0 767.0 345.0 768.0C353.0 769.0 356.2 772.7 358.0 778.0C359.8 783.3 357.5 792.7 356.0 800.0C354.5 807.3 352.3 815.0 349.0 822.0C345.7 829.0 342.2 836.7 336.0 842.0C329.8 847.3 324.7 851.0 312.0 854.0C299.3 857.0 280.3 859.3 260.0 860.0C239.7 860.7 213.3 859.7 190.0 858.0C166.7 856.3 140.3 852.7 120.0 850.0C99.7 847.3 80.0 847.3 68.0 842.0C56.0 836.7 51.3 826.3 48.0 818.0C44.7 809.7 45.7 800.0 48.0 792.0C50.3 784.0 48.3 775.3 62.0 770.0Z" fill="#CFDCC9"/><g fill="#BFD0BA"><ellipse cx="356" cy="780" rx="14" ry="10"/><ellipse cx="352" cy="801" rx="12" ry="9"/><ellipse cx="345" cy="821" rx="11" ry="8.5"/><ellipse cx="334" cy="840" rx="10" ry="8"/></g><circle cx="96" cy="806" r="26" fill="#BFD0BA"/><g class="z" data-k="top"><path d="M252 790H300" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M252 805H300" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M252 820H300" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M252 835H300" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/></g><g class="z" data-k="lymph"><path d="M160.0 770.0C161.7 766.7 175.7 781.7 180.0 788.0C184.3 794.3 186.0 801.3 186.0 808.0C186.0 814.7 184.0 822.3 180.0 828.0C176.0 833.7 163.7 845.3 162.0 842.0C160.3 838.7 170.3 820.0 170.0 808.0C169.7 796.0 158.3 773.3 160.0 770.0Z" fill="#5E8270"/></g><g class="z" data-k="hip"><ellipse cx="196" cy="846" rx="14" ry="8" fill="#D39A55"/></g><g class="edge"><path d="M750.0 770.0C736.3 764.7 705.0 761.0 682.0 760.0C659.0 759.0 633.7 762.0 612.0 764.0C590.3 766.0 570.3 770.7 552.0 772.0C533.7 773.3 516.2 772.7 502.0 772.0C487.8 771.3 475.0 767.0 467.0 768.0C459.0 769.0 455.8 772.7 454.0 778.0C452.2 783.3 454.5 792.7 456.0 800.0C457.5 807.3 459.7 815.0 463.0 822.0C466.3 829.0 469.8 836.7 476.0 842.0C482.2 847.3 487.3 851.0 500.0 854.0C512.7 857.0 531.7 859.3 552.0 860.0C572.3 860.7 598.7 859.7 622.0 858.0C645.3 856.3 671.7 852.7 692.0 850.0C712.3 847.3 732.0 847.3 744.0 842.0C756.0 836.7 760.7 826.3 764.0 818.0C767.3 809.7 766.3 800.0 764.0 792.0C761.7 784.0 763.7 775.3 750.0 770.0Z"/><ellipse cx="456" cy="780" rx="14" ry="10"/><ellipse cx="460" cy="801" rx="12" ry="9"/><ellipse cx="467" cy="821" rx="11" ry="8.5"/><ellipse cx="478" cy="840" rx="10" ry="8"/></g><path d="M750.0 770.0C736.3 764.7 705.0 761.0 682.0 760.0C659.0 759.0 633.7 762.0 612.0 764.0C590.3 766.0 570.3 770.7 552.0 772.0C533.7 773.3 516.2 772.7 502.0 772.0C487.8 771.3 475.0 767.0 467.0 768.0C459.0 769.0 455.8 772.7 454.0 778.0C452.2 783.3 454.5 792.7 456.0 800.0C457.5 807.3 459.7 815.0 463.0 822.0C466.3 829.0 469.8 836.7 476.0 842.0C482.2 847.3 487.3 851.0 500.0 854.0C512.7 857.0 531.7 859.3 552.0 860.0C572.3 860.7 598.7 859.7 622.0 858.0C645.3 856.3 671.7 852.7 692.0 850.0C712.3 847.3 732.0 847.3 744.0 842.0C756.0 836.7 760.7 826.3 764.0 818.0C767.3 809.7 766.3 800.0 764.0 792.0C761.7 784.0 763.7 775.3 750.0 770.0Z" fill="#CFDCC9"/><g fill="#BFD0BA"><ellipse cx="456" cy="780" rx="14" ry="10"/><ellipse cx="460" cy="801" rx="12" ry="9"/><ellipse cx="467" cy="821" rx="11" ry="8.5"/><ellipse cx="478" cy="840" rx="10" ry="8"/></g><circle cx="716" cy="806" r="26" fill="#BFD0BA"/><g class="z" data-k="top"><path d="M560 790H512" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M560 805H512" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M560 820H512" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/><path d="M560 835H512" stroke="#7E9F89" stroke-width="8" stroke-linecap="round"/></g><g class="z" data-k="lymph"><path d="M652.0 770.0C650.3 766.7 636.3 781.7 632.0 788.0C627.7 794.3 626.0 801.3 626.0 808.0C626.0 814.7 628.0 822.3 632.0 828.0C636.0 833.7 648.3 845.3 650.0 842.0C651.7 838.7 641.7 820.0 642.0 808.0C642.3 796.0 653.7 773.3 652.0 770.0Z" fill="#5E8270"/></g><g class="z" data-k="hip"><ellipse cx="616" cy="846" rx="14" ry="8" fill="#D39A55"/></g></g><g class="labels"><g class="lb" data-k="eyes"><text x="52" y="325">eyes and ears</text><path d="M52 330H222"/><circle cx="222" cy="330" r="2.2"/></g><g class="lb" data-k="shoulder"><text x="52" y="351">shoulder</text><path d="M52 356H178"/><circle cx="178" cy="356" r="2.2"/></g><g class="lb" data-k="shoulder"><text x="52" y="377">arm</text><path d="M52 382H176"/><circle cx="176" cy="382" r="2.2"/></g><g class="lb" data-k="diaphragm"><text x="52" y="407">diaphragm</text><path d="M52 412H228"/><circle cx="228" cy="412" r="2.2"/></g><g class="lb" data-k="gut"><text x="52" y="547">small intestine</text><path d="M52 552H240"/><circle cx="240" cy="552" r="2.2"/></g><g class="lb" data-k="sciatic"><text x="52" y="613">sciatic nerve</text><path d="M52 618H252"/><circle cx="252" cy="618" r="2.2"/></g><g class="lb" data-k="eyes"><text x="760" y="325" text-anchor="end">eyes and ears</text><path d="M590 330H760"/><circle cx="590" cy="330" r="2.2"/></g><g class="lb" data-k="shoulder"><text x="760" y="351" text-anchor="end">shoulder</text><path d="M634 356H760"/><circle cx="634" cy="356" r="2.2"/></g><g class="lb" data-k="shoulder"><text x="760" y="377" text-anchor="end">arm</text><path d="M636 382H760"/><circle cx="636" cy="382" r="2.2"/></g><g class="lb" data-k="diaphragm"><text x="760" y="407" text-anchor="end">diaphragm</text><path d="M584 412H760"/><circle cx="584" cy="412" r="2.2"/></g><g class="lb" data-k="gut"><text x="760" y="547" text-anchor="end">small intestine</text><path d="M572 552H760"/><circle cx="572" cy="552" r="2.2"/></g><g class="lb" data-k="sciatic"><text x="760" y="613" text-anchor="end">sciatic nerve</text><path d="M560 618H760"/><circle cx="560" cy="618" r="2.2"/></g><g class="lb" data-k="liver"><text x="52" y="445">gall bladder</text><path d="M52 450H213"/><circle cx="213" cy="450" r="2.2"/></g><g class="lb" data-k="liver"><text x="52" y="471">liver</text><path d="M52 476H196"/><circle cx="196" cy="476" r="2.2"/></g><g class="lb" data-k="spleen"><text x="760" y="435" text-anchor="end">spleen</text><path d="M632 440H760"/><circle cx="632" cy="440" r="2.2"/></g><g class="lb" data-k="spleen"><text x="760" y="457" text-anchor="end">stomach</text><path d="M572 462H760"/><circle cx="572" cy="462" r="2.2"/></g><g class="lb" data-k="spleen"><text x="760" y="479" text-anchor="end">pancreas</text><path d="M562 484H760"/><circle cx="562" cy="484" r="2.2"/></g><g class="lb" data-k="head"><text x="406" y="257" text-anchor="middle">pituitary</text><path d="M318 262H494"/><circle cx="318" cy="262" r="2.2"/><circle cx="494" cy="262" r="2.2"/></g><g class="lb" data-k="neck"><text x="406" y="305" text-anchor="middle">neck, thyroid</text><path d="M330 310H482"/><circle cx="330" cy="310" r="2.2"/><circle cx="482" cy="310" r="2.2"/></g><g class="lb" data-k="chest"><text x="406" y="339" text-anchor="middle">lung, breast</text><path d="M288 344H524"/><circle cx="288" cy="344" r="2.2"/><circle cx="524" cy="344" r="2.2"/></g><g class="lb" data-k="chest"><text x="406" y="363" text-anchor="middle">heart</text><path d="M406 368H512"/><circle cx="512" cy="368" r="2.2"/></g><g class="lb" data-k="chest"><text x="406" y="385" text-anchor="middle">thymus</text><path d="M310 390H502"/><circle cx="310" cy="390" r="2.2"/><circle cx="502" cy="390" r="2.2"/></g><g class="lb" data-k="diaphragm"><text x="406" y="404" text-anchor="middle">solar plexus</text><path d="M300 409H512"/><circle cx="300" cy="409" r="2.2"/><circle cx="512" cy="409" r="2.2"/></g><g class="lb" data-k="kidney"><text x="406" y="442" text-anchor="middle">adrenal glands</text><path d="M260 447H552"/><circle cx="260" cy="447" r="2.2"/><circle cx="552" cy="447" r="2.2"/></g><g class="lb" data-k="kidney"><text x="406" y="473" text-anchor="middle">kidneys</text><path d="M256 478H556"/><circle cx="256" cy="478" r="2.2"/><circle cx="556" cy="478" r="2.2"/></g><g class="lb" data-k="spine"><text x="406" y="525" text-anchor="middle">spine</text><path d="M294 530H518"/><circle cx="294" cy="530" r="2.2"/><circle cx="518" cy="530" r="2.2"/></g><g class="lb" data-k="bladder"><text x="406" y="581" text-anchor="middle">bladder</text><path d="M277 586H535"/><circle cx="277" cy="586" r="2.2"/><circle cx="535" cy="586" r="2.2"/></g><g class="lb" data-k="head"><text x="122" y="216" text-anchor="middle">sinus</text><path d="M100 222H282M200 222V312M222 222V294M248 222V279M277 222V266"/></g><g class="lb" data-k="neck"><text x="240" y="195" text-anchor="middle">side neck</text><path d="M206 201H296V300"/></g><g class="lb" data-k="head"><text x="300" y="168" text-anchor="middle">brain</text><path d="M278 174H318V232"/></g><g class="lb" data-k="head"><text x="690" y="216" text-anchor="middle">sinus</text><path d="M712 222H530M612 222V312M590 222V294M564 222V279M535 222V266"/></g><g class="lb" data-k="neck"><text x="572" y="195" text-anchor="middle">side neck</text><path d="M606 201H516V300"/></g><g class="lb" data-k="head"><text x="512" y="168" text-anchor="middle">brain</text><path d="M534 174H494V232"/></g><g class="lb" data-k="top"><text x="406" y="724" text-anchor="middle">between shoulder blades</text><path d="M276 786V730H536V786"/></g><g class="lb" data-k="top"><text x="406" y="796" text-anchor="middle">chest</text><text x="406" y="817" text-anchor="middle">lung</text><text x="406" y="838" text-anchor="middle">breast</text><text x="406" y="859" text-anchor="middle">back</text><path d="M380 778H372V864H380M432 778H440V864H432M306 790H372M306 820H372M440 790H506M440 820H506"/></g><g class="lb" data-k="hip"><text x="406" y="903" text-anchor="middle">knee, leg, hip, lower back</text><path d="M196 856V908H314M616 856V908H498"/></g><g class="lb" data-k="lymph"><text x="406" y="937" text-anchor="middle">lymph, groin, fallopian tube</text><path d="M168 846V942H302M644 846V942H510"/></g></g></svg>
+        </div>
+        <figcaption>Adapted from Healthline’s foot reflexology chart</figcaption>
+      </figure>
+      <div class="reflex-copy">
+        <h2 id="reflexTitle" class="reflex-title">SoleWalk’s acupressure tread is designed to <em>boost circulation and energy flow</em> through your feet, for the benefit of your whole body.</h2>
+        <div class="readout">
+          <span class="ro-area" id="roArea">Toes</span>
+          <span class="ro-part" id="roPart">Brain, pituitary &amp; sinuses</span>
+          <span class="ro-hint">Each area of the sole maps to a part of the body. Hover or tap any area of the chart.</span>
+        </div>
+        <ul class="benefits">
+          <li>Eases <b>tired, sore, or cold feet</b> by targeting key pressure points.</li>
+          <li>Promotes <b>relaxation</b> and helps restore balance.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="use" aria-labelledby="useTitle">
+    <div class="wrap">
+      <div class="sec-head use-head">
+        <h2 id="useTitle">Step on, slow down.</h2>
+      </div>
+      <ol class="how">
+        <li><span class="hn">01</span><h3>Go barefoot</h3><p>Place your bare feet on the pad, relax your body and take even steps to spread your weight. If the nodes are too intense, throw on your favorite pair of socks. Aim for 15 minutes. If that’s too much, start slow and build up.</p></li>
+        <li><span class="hn">02</span><h3>Breathe through it</h3><p>The sensation can feel intense at first. Slow, steady breaths calm your nervous system and ease you in.</p></li>
+        <li><span class="hn">03</span><h3>Build a routine</h3><p>Daily habits stick. Walk after work, with your morning coffee, or during a call.</p></li>
+        <li><span class="hn">04</span><h3>Keep it close</h3><p>Easy storage and setup means SoleWalk can live where you’ll use it, like under your desk.</p></li>
+      </ol>
+      <div class="caution">
+        <p><b>Before you start, talk with a doctor.</b> People with circulatory issues, gout, or blood clots should avoid acupressure. Pregnant? Check with your doctor first.</p>
+        <p class="sources">Sources: Healthline, “Foot Reflexology Chart” · WebMD, “What Is Acupressure?” · Shakti, “How to Use”</p>
+      </div>
+    </div>
+  </section>
+
   <section id="gallery" aria-labelledby="galTitle">
     <div class="wrap gal-head">
       <h2 id="galTitle">Take a closer look.</h2>
@@ -359,7 +463,7 @@ footer small{color:var(--muted);font-size:.9rem}
     <ul class="gal" id="gal">
       <li class="gal-card"><img src="img/sofa.jpg" alt="Solewalk slid under a sofa" loading="lazy"><span>Slides under the sofa.</span></li>
       <li class="gal-card"><img src="img/display.jpg" alt="The Solewalk control panel and display" loading="lazy"><span>Simple controls.</span></li>
-      <li class="gal-card"><img src="img/topdown.jpg" alt="Solewalk seen from above on a wood floor" loading="lazy"><span>Slim from above.</span></li>
+      <li class="gal-card"><img src="img/topdown.jpg" style="object-position:50% 12%" alt="Solewalk seen from above on a wood floor" loading="lazy"><span>Slim from above.</span></li>
     </ul>
   </section>
 
@@ -722,27 +826,27 @@ const ART={
   mat:`<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M60 30 178 82 140 120 22 68Z"/><path d="M22 68v6l118 52v-6M178 82v6l-38 38" opacity=".7"/><g fill="currentColor" stroke="none" opacity=".75">${Array.from({length:7},(_,r)=>Array.from({length:9},(_,c)=>{const x=56+c*12.6-r*5.4,y=40+c*5.6+r*9.2;return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.8"/>`}).join('')).join('')}</g></svg>`
 };
 const P={
-  solewalk:{name:'Solewalk',type:'Walking pad + acupressure',price:'$289.99',img:'img/render.webp',
+  solewalk:{name:'Solewalk',type:'Walking pad + acupressure',img:'img/render.webp',
     walk:['Walking pad','Low impact, so you can walk while you work'],
     massage:['Acupressure tread','Rounded nodes molded into the tread'],
     both:['Walk and massage at once','Every step presses into your soles'],
     levels:['Two interchangeable treads','Beginner and general use, swapped by hand']},
-  funray:{name:'FUNRAY Dual-Sided Pad',type:'Walking pad',price:'$199.99',art:'pad',
+  funray:{name:'FUNRAY Dual-Sided Pad',type:'Walking pad',art:'pad',
     walk:['Walking pad','Adjustable speed'],
     massage:['Massage side','Flip the pad over to use it'],
     both:[null,'One side at a time'],
     levels:['One intensity']},
-  walkingpad:{name:'WalkingPad Stride Station',type:'Walking pad',price:'$159.99',art:'pad',
+  walkingpad:{name:'WalkingPad Stride Station',type:'Walking pad',art:'pad',
     walk:['Walking pad','Several speed and incline levels'],
     massage:[null,'Built for step counts, not your feet'],
     both:[null],
     levels:[null]},
-  renpho:{name:'RENPHO Shiatsu Massager',type:'Foot massager',price:'$159.99',art:'massager',
+  renpho:{name:'RENPHO Shiatsu Massager',type:'Foot massager',art:'massager',
     walk:[null,'You sit still while you use it'],
     massage:['Shiatsu foot massage','Strong relief for tired feet'],
     both:[null],
     levels:['nl']},
-  mat:{name:'ProsourceFit Mat',type:'Acupressure mat',price:'$29.99',art:'mat',
+  mat:{name:'ProsourceFit Mat',type:'Acupressure mat',art:'mat',
     walk:[null,'You stand or lie still on it'],
     massage:['Acupressure mat','Static pressure'],
     both:[null],
@@ -765,7 +869,7 @@ function renderCmp(){
       ? `<div class="cmp-pick is-fixed"><div class="fixed">Solewalk</div></div>`
       : `<label class="cmp-pick"><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Compare with</span><select data-col="${i}">${Object.keys(P).filter(x=>x!=='solewalk').map(x=>`<option value="${x}"${x===k?' selected':''}>${P[x].name}</option>`).join('')}</select></label>`;
     const art = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy">` : ART[p.art];
-    h+=`<div class="cmp-cell cmp-head ${c}">${pick}<div class="cmp-art">${art}</div><span class="cmp-type">${p.type}</span><span class="cmp-price price">${p.price}</span></div>`;
+    h+=`<div class="cmp-cell cmp-head ${c}">${pick}<div class="cmp-art">${art}</div><span class="cmp-type">${p.type}</span></div>`;
   });
   ROWS.forEach(r=>{ h+=`<div class="cmp-row">${picks.map((k,i)=>cell(P[k],r).replace('class="cmp-cell"',`class="cmp-cell c${i+1}"`)).join('')}</div>`; });
   cmpEl.innerHTML=h;
@@ -788,7 +892,7 @@ document.getElementById('extras').innerHTML=[
 
 /* ---------- scroll animations ---------- */
 if(document.documentElement.classList.contains('anim')){
-  const groups=['.sec-head > *','.feel figure','.feel-points li','.gal-head > *','.gal-card','.cmp-head > :not(.cmp-art)','.cmp-art > *','.cmp-row > .cmp-cell','.cmp-sum','.extras h3','.extras ul'];
+  const groups=['.sec-head > *','.feel figure','.feel-points li','.chart-wrap','.reflex-copy > *','.how','.caution','.gal-head > *','.gal-card','.cmp-head > :not(.cmp-art)','.cmp-art > *','.cmp-row > .cmp-cell','.cmp-sum','.extras h3','.extras ul'];
   groups.forEach(sel=>{
     document.querySelectorAll(sel).forEach(el=>{
       if(el.classList.contains('rv')) return;
@@ -854,6 +958,31 @@ document.addEventListener('click',e=>{
   }
 }
 
+/* ---------- reflexology chart: hovering a zone or its label names the part of the body it maps to; it tours the zones until someone takes over ---------- */
+{
+  const K={head:['Tips of the toes','Brain, pituitary & sinuses'],neck:['Neck of the big toe','Neck, side neck & thyroid'],eyes:['Base of the toes','Eyes & ears'],
+    chest:['Ball of the foot','Lungs, breast, heart & thymus'],shoulder:['Outer edge of the ball','Shoulders & arms'],diaphragm:['Below the ball','Diaphragm & solar plexus'],
+    liver:['Upper arch','Liver & gall bladder'],spleen:['Upper arch','Spleen, pancreas & stomach'],kidney:['Middle of the arch','Kidneys & adrenal glands'],
+    spine:['Inner edge','Spine'],gut:['Lower arch','Small intestine'],bladder:['Inner lower arch','Bladder'],sciatic:['Heel','Sciatic nerve'],
+    top:['Top of the toes','Chest, lungs, breast & upper back'],hip:['Outer ankle','Knee, leg, hip & lower back'],lymph:['Front of the ankle','Lymph, groin & fallopian tubes']};
+  const order=Object.keys(K);
+  const rx=document.getElementById('rx'), area=document.getElementById('roArea'), part=document.getElementById('roPart');
+  const els=[...rx.querySelectorAll('.z,.lb')];
+  let cur='', timer=0, manual=false;
+  function pick(k){ if(k===cur) return; cur=k;
+    els.forEach(e=>e.classList.toggle('on',e.dataset.k===k)); rx.classList.add('has');
+    area.textContent=K[k][0]; part.textContent=K[k][1];
+    part.classList.remove('flip'); void part.offsetWidth; part.classList.add('flip'); }
+  const seen=new Set();
+  els.forEach(e=>{const k=e.dataset.k, take=()=>{manual=true;clearInterval(timer);pick(k);};
+    e.addEventListener('pointerenter',take); e.addEventListener('click',take);
+    // one keyboard stop per zone
+    if(e.classList.contains('z')&&!seen.has(k)){seen.add(k);e.setAttribute('tabindex','0');e.setAttribute('role','button');e.setAttribute('aria-label',K[k][0]+': '+K[k][1]);e.addEventListener('focus',take);}});
+  pick('head');
+  if(!reduce) new IntersectionObserver(es=>{clearInterval(timer);
+    if(es[0].isIntersecting&&!manual) timer=setInterval(()=>pick(order[(order.indexOf(cur)+1)%order.length]),2400);},{threshold:.4}).observe(rx);
+}
+
 /* ---------- nav bar: dark while it sits over a dark section ---------- */
 {
   const nav=document.querySelector('header.nav'), darks=[...document.querySelectorAll('.roll,.finale')];
@@ -885,6 +1014,7 @@ document.getElementById('resForm').addEventListener('submit',e=>{
 import * as THREE from 'three';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
 const R=window.SWroll;
 try{ if(R) init(); }catch(e){ console.warn('3D view unavailable, using the drawing instead.',e); }
@@ -964,15 +1094,34 @@ function init(){
 
   // treads: a slab, a rounded nose over the front roller, and instanced cone nodes
   const {BX0,BL,BY,BW,RB,COLS,ROWS}=R, MAXN=COLS*ROWS;
-  const nodeGeo=(r,h)=>new THREE.LatheGeometry([[r,0],[r*.97,h*.12],[r*.8,h*.4],[r*.55,h*.68],[r*.3,h*.88],[r*.12,h*.98],[0,h]].map(([x,y])=>new THREE.Vector2(x,y)),18);
-  function makeTread(belt,node,r,h){
+  // nodes match the real treads: a low puck topped by a cluster of tips
+  const V2=(p)=>p.map(([x,y])=>new THREE.Vector2(x,y));
+  const ringOf=(src,n,rad,y,tilt,phase=0)=>Array.from({length:n},(_,i)=>{const g=src.clone();g.rotateZ(-tilt);g.translate(rad,y,0);g.rotateY(phase+i*2*Math.PI/n);return g;});
+  // beginner: rounded "succulent" clusters, soft petal tips around a taller centre
+  function petalNode(r,h){
+    const base=new THREE.LatheGeometry(V2([[r,0],[r,h*.3],[r*.94,h*.4],[r*.6,h*.44],[0,h*.44]]),18);
+    const petal=(w,t)=>{const g=new THREE.SphereGeometry(1,10,8);g.scale(w,t,w);return g;};
+    return mergeGeometries([base,
+      ...ringOf(petal(r*.27,h*.42),7,r*.66,h*.5,.28),
+      ...ringOf(petal(r*.24,h*.5),3,r*.28,h*.62,.12,.5),
+      (()=>{const g=petal(r*.2,h*.5);g.translate(0,h*.72,0);return g;})()]);
+  }
+  // general use: a crown of sharp spikes around a hollow centre
+  function crownNode(r,h){
+    const base=new THREE.LatheGeometry(V2([[r,0],[r,h*.16],[r*.95,h*.26],[r*.42,h*.32],[r*.27,h*.28],[r*.23,h*.1],[0,h*.1]]),20);
+    const spike=(w,t)=>{const g=new THREE.ConeGeometry(w,t,7,1);g.translate(0,t/2,0);return g;};
+    return mergeGeometries([base,
+      ...ringOf(spike(r*.17,h*.62),9,r*.72,h*.2,.22),
+      ...ringOf(spike(r*.13,h*.44),6,r*.45,h*.26,.1,.35)]);
+  }
+  function makeTread(belt,node,r,h,shape){
     const g=new THREE.Group(), bm=new THREE.MeshStandardMaterial({color:belt,roughness:.78,envMapIntensity:.5}), nm=new THREE.MeshPhysicalMaterial({color:node,roughness:.55,clearcoat:.25,envMapIntensity:.5});
     const slab=add(new THREE.BoxGeometry(1,1.4,2*BW),bm,0,-.7,0,{to:g});
     const nose=add(new THREE.CylinderGeometry(RB,RB,2*BW,32),bm,0,-RB,0,{to:g,rx:Math.PI/2});
-    const nodes=new THREE.InstancedMesh(nodeGeo(r,h),nm,MAXN); nodes.castShadow=nodes.receiveShadow=true; g.add(nodes);
+    const nodes=new THREE.InstancedMesh(shape(r,h),nm,MAXN); nodes.castShadow=nodes.receiveShadow=true; g.add(nodes);
     pad.add(g); return {g,slab,nose,nodes,mats:[bm,nm]};
   }
-  const treads={beginner:makeTread('#7F9E89','#8DAD97',1.25,1.05),general:makeTread('#2A4234','#34503D',1.6,1.9)};
+  const treads={beginner:makeTread('#7F9E89','#8DAD97',1.35,1.25,petalNode),general:makeTread('#2A4234','#34503D',1.55,1.7,crownNode)};
   // roller unit, shown while it is lifted out
   const unit=new THREE.Group(); pad.add(unit);
   const rollers=[0,1].map(()=>add(new THREE.CylinderGeometry(1.4,1.4,46,24),steel,0,-1.3,0,{to:unit,rx:Math.PI/2}));
